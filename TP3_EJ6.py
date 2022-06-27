@@ -128,8 +128,9 @@ def train(x, t, pesos, learning_rate, epochs, n_validacion, x_val, t_val):
                     print("No Correlación (diferencia mayor al 80%)\n")
                     #break
                 elif (error_val> 0.2):
-                    print("No Correlación (diferencia mayor al 20%)\n")
-                print("\nEpoch", i,"\n", "Training Loss: ",loss," Validation Loss: ", Loss_act, " Correlation Error: ",error_val)
+                    #print("No Correlación (diferencia mayor al 20%)\n")
+                    pass
+                #print("\nEpoch", i,"\n", "Training Loss: ",loss," Validation Loss: ", Loss_act, " Correlation Error: ",error_val)
 
 def iniciar(numero_clases, numero_ejemplos, graficar_datos, aleatoriedad_train, aleatoriedad_test, aleatoriedad_val,learning,neuronas):
     # Generamos conjuntos de train, validacion y test
@@ -175,11 +176,11 @@ def barrido():
     #Vectores de Learning Rate y Neuronas Ocultas
     l_min=0.1
     l_max=1.1
-    cantidad_l=(l_max-l_min)/l_min
+    cantidad_l=int((l_max-l_min)/l_min)
 
-    n_min=1
+    n_min=10
     n_max=101
-    cantidad_n=(n_max-n_min)/n_min
+    cantidad_n=int((n_max-n_min)/n_min)
 
     learning=np.linspace(l_min,l_max,cantidad_l)
     neuronas=np.linspace(n_min,n_max,cantidad_n)
@@ -187,12 +188,18 @@ def barrido():
     c1=0
     c2=0
     error=np.zeros((len(neuronas),len(learning)))
+    paso=0
     for i in neuronas:
+        c2=0
         for j in learning:
             #error es una matriz de filas=numero de neuronas y columnas=learning rate
-            error[c1][c2]=iniciar(numero_clases=1, numero_ejemplos=300, graficar_datos=True, aleatoriedad_train=0.1, aleatoriedad_test=0.15, aleatoriedad_val=0.3,learning=i,neuronas=j)
+            error[c1][c2]=iniciar(numero_clases=1, numero_ejemplos=300, graficar_datos=True, aleatoriedad_train=0.1, aleatoriedad_test=0.15, aleatoriedad_val=0.3,learning=j,neuronas=int(i))
             c2+=1
+            paso+=1
+            print("Barrido N° ", paso)
         c1+=1
 
     ubi_min=np.unravel_index(np.argmin(error,axis=None),error.shape)
     print("Mejor combinacion: \nCantidad Neuronas= ",neuronas(ubi_min(0)-1),"\nLearning Rate: ",learning(ubi_min(1)-1))
+    input()
+barrido()
