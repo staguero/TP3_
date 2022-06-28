@@ -153,7 +153,7 @@ def iniciar(numero_clases, numero_ejemplos, graficar_datos, aleatoriedad_train, 
 
     # Entrena
     LEARNING_RATE=learning
-    EPOCHS=1000
+    EPOCHS=500
     N_VALIDACION=EPOCHS/10
     train(x, t, pesos, LEARNING_RATE, EPOCHS, N_VALIDACION, x_val, t_val)
     
@@ -175,16 +175,16 @@ def validar(xt,tt,pesos):
 def barrido():
     #Vectores de Learning Rate y Neuronas Ocultas
     l_min=0.1
-    l_max=1.1
+    l_max=0.5
     cantidad_l=int((l_max-l_min)/l_min)
 
     n_min=10
-    n_max=101
+    n_max=100
     cantidad_n=int((n_max-n_min)/n_min)
 
     learning=np.linspace(l_min,l_max,cantidad_l)
     neuronas=np.linspace(n_min,n_max,cantidad_n)
-
+    print("Neuronas ",len(neuronas)," Learnign ", len(learning))
     c1=0
     c2=0
     error=np.zeros((len(neuronas),len(learning)))
@@ -198,8 +198,8 @@ def barrido():
             paso+=1
             print("Barrido N° ", paso)
         c1+=1
-
+    
     ubi_min=np.unravel_index(np.argmin(error,axis=None),error.shape)
-    print("Mejor combinacion: \nCantidad Neuronas= ",neuronas(ubi_min(0)-1),"\nLearning Rate: ",learning(ubi_min(1)-1))
+    print("Mejor combinacion: \nCantidad Neuronas= ",neuronas[ubi_min[0]],"\nLearning Rate: ",learning[ubi_min[1]])
     input()
 barrido()
