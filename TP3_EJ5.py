@@ -31,7 +31,6 @@ def inicializar_pesos(n_entrada, n_capa_2, n_capa_3):
 
     return {"w1": w1, "b1": b1, "w2": w2, "b2": b2}
 
-
 def ejecutar_adelante(x, pesos):
     # Funcion de entrada (a.k.a. "regla de propagacion") para la primera capa oculta
     z = x.dot(pesos["w1"]) + pesos["b1"]
@@ -43,7 +42,6 @@ def ejecutar_adelante(x, pesos):
     # las neuronas y para todos los ejemplos proporcionados
     y = h.dot(pesos["w2"]) + pesos["b2"]
     return {"z": z, "h": h, "y": y}
-
 
 def clasificar(x, pesos):
     # Corremos la red "hacia adelante"
@@ -62,11 +60,14 @@ def clasificar(x, pesos):
     except:
         return max_scores[:]
 
-
 def train(x, t, pesos, learning_rate, epochs, n_validacion, x_val, t_val):
     # Cantidad de filas (i.e. cantidad de ejemplos)
     m = np.size(x, 0) 
     Loss_ant = 1000
+    Loss_act= 0
+    valores_loss_training=[]
+    valores_loss_validacion=[]
+
     for i in range(epochs):
         # Ejecucion de la red hacia adelante
         resultados_feed_forward = ejecutar_adelante(x, pesos)
@@ -75,7 +76,6 @@ def train(x, t, pesos, learning_rate, epochs, n_validacion, x_val, t_val):
         z = resultados_feed_forward["z"]
 
         # Calculo de la funcion de perdida global con MSE.
-
         err=np.zeros((m,1))
         for j in range(m):
             err[j]=(t[j]-y[j])
@@ -134,7 +134,19 @@ def train(x, t, pesos, learning_rate, epochs, n_validacion, x_val, t_val):
                 elif (error_val> 0.2):
                     print("No Correlación (diferencia mayor al 20%)\n")
                 print("\nEpoch", i,"\n", "Training Loss: ",loss," Validation Loss: ", Loss_act, " Correlation Error: ",error_val)
-
+        valores_loss_training.append(float(loss))
+        valores_loss_validacion.append(float(Loss_act))
+    
+    #Gráfico
+    plt.figure(1)
+    plt.title("VALOR DE PÉRDIDA")
+    plt.xlabel("Epochs")
+    plt.ylabel("Error")
+    plt.plot(range(epochs),valores_loss_training)
+    plt.plot(range(epochs),valores_loss_validacion)
+    plt.grid()
+    plt.show()
+        
 def iniciar(numero_clases, numero_ejemplos, graficar_datos, aleatoriedad_train, aleatoriedad_test, aleatoriedad_val):
     # Generamos conjuntos de train, validacion y test
     dataset=generador_datos(7,17379)
